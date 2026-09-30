@@ -1,6 +1,9 @@
 # Publication boundary
 
-Status: **NEEDS USER REVIEW**. This is a local candidate, not an already-published repository.
+Status: **PUBLICATION APPROVED** for this independent synthetic showcase.
+The owner authorized public publication on 2026-10-01. This authorization is not
+an open-source license grant or an independent legal clearance of employment/IP terms.
+Hosted CI and rendering are checked separately from local validation.
 
 This repository is a sanitized and reconstructed technical showcase based on engineering experience from a private production AI platform.
 
@@ -21,7 +24,7 @@ Confirm employer / collaboration IP and NDA boundaries, authorship of this recon
 the intended code license, third-party notices, and the exact repository/account visibility.
 No license grant has been selected yet. Being technically sanitized is not legal clearance.
 No original screenshots, source files, model artifacts or Git history are included.
-No commits or remotes are required to review this local candidate.
+This repository uses newly created history, not the private platform's Git history.
 
 The profile and research claims must be checked against original degree/publication/patent evidence.
 Do not add private links, real prompts, personal identifiers, operational topology or credentials.
