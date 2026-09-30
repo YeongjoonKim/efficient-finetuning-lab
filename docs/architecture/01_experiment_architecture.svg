@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="1090" viewBox="0 0 1160 1090" role="img" aria-labelledby="title desc">
+<title id="title">Parameter-efficient experiment lifecycle</title><desc id="desc">Independently reconstructed generic architecture. Implemented, partial and proposed nodes are explicitly distinguished. This is not a production system map.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8" fill="#8a9aab"/></marker></defs>
+<rect width="1160" height="1090" fill="#f3f6fa"/>
+<text x="40" y="48" font-family="sans-serif" font-size="25" font-weight="700" fill="#15304c">Parameter-efficient experiment lifecycle</text>
+<text x="40" y="82" font-family="sans-serif" font-size="15" fill="#506177">Reconstructed Public Showcase · generic reference, not production topology</text>
+<path d="M580 222 L580 254" stroke="#8a9aab" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+<path d="M580 347 L580 379" stroke="#8a9aab" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+<path d="M580 472 L401 504" stroke="#8a9aab" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+<path d="M580 472 L759 504" stroke="#8a9aab" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+<path d="M401 597 L580 629" stroke="#8a9aab" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+<path d="M759 597 L580 629" stroke="#8a9aab" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+<path d="M580 722 L580 754" stroke="#8a9aab" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+<path d="M580 847 L580 879" stroke="#8a9aab" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+<rect x="410" y="135" width="340" height="87" rx="10" fill="#dff3e7" stroke="#aebfce"/>
+<text x="580" y="161" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#15304c">Synthetic dataset</text>
+<text x="580" y="208" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#4c6072">IMPLEMENTED</text>
+<rect x="410" y="260" width="340" height="87" rx="10" fill="#dff3e7" stroke="#aebfce"/>
+<text x="580" y="286" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#15304c">Seeded split / digest</text>
+<text x="580" y="333" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#4c6072">IMPLEMENTED</text>
+<rect x="410" y="385" width="340" height="87" rx="10" fill="#dff3e7" stroke="#aebfce"/>
+<text x="580" y="411" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#15304c">Frozen linear base</text>
+<text x="580" y="458" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#4c6072">IMPLEMENTED</text>
+<rect x="231" y="510" width="340" height="87" rx="10" fill="#dff3e7" stroke="#aebfce"/>
+<text x="401" y="536" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#15304c">Rank-one adapter</text>
+<text x="401" y="583" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#4c6072">IMPLEMENTED</text>
+<rect x="589" y="510" width="340" height="87" rx="10" fill="#e7edf5" stroke="#aebfce" stroke-dasharray="5 4"/>
+<text x="759" y="536" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#15304c">LLM LoRA / QLoRA</text>
+<text x="759" y="583" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#4c6072">PROPOSED</text>
+<rect x="410" y="635" width="340" height="87" rx="10" fill="#e9e2fa" stroke="#aebfce"/>
+<text x="580" y="661" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#15304c">Training / holdout loss</text>
+<text x="580" y="708" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#4c6072">PARTIAL</text>
+<rect x="410" y="760" width="340" height="87" rx="10" fill="#dff3e7" stroke="#aebfce"/>
+<text x="580" y="786" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#15304c">Checkpoint / manifest</text>
+<text x="580" y="833" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#4c6072">IMPLEMENTED</text>
+<rect x="410" y="885" width="340" height="87" rx="10" fill="#dff3e7" stroke="#aebfce"/>
+<text x="580" y="911" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#15304c">Inference / limits</text>
+<text x="580" y="958" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#4c6072">IMPLEMENTED</text>
+<text x="40" y="1066" font-family="sans-serif" font-size="13" fill="#506177">Working = this sample only. Mock = synthetic substitute. Design / proposed = not implemented here.</text>
+</svg>
