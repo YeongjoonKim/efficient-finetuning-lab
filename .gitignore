@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+.venv/
+.env
+.env.*
+*.pem
+*.key
+*.safetensors
+*.pt
+*.bin
+outputs/
+private/
+internal-review/
+public_showcase_internal/
+.DS_Store
