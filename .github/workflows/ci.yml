@@ -1,0 +1,31 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Syntax, local links, JSON and heuristic secret check
+        run: python3 scripts/check_repository.py
+      - name: Regression tests
+        run: python3 -m unittest discover -s tests -v
+      - name: Offline example smoke
+        run: python3 -m src.toy_lora
+      - name: Optional recipe dry run only
+        run: python3 -m src.optional_peft --mode qlora
