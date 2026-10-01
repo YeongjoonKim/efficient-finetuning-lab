@@ -2,10 +2,22 @@
 from pathlib import Path
 import tempfile
 import unittest
-from scripts.check_repository import inspect_file, secret_rules
+from scripts.check_repository import inspect_file, secret_rules, png_rules
 
 
 class QualityTests(unittest.TestCase):
+    def test_png_requires_valid_structure(self):
+        self.assertIn("invalid-png", png_rules(b"not an image"))
+        self.assertIn("invalid-png-structure", png_rules(b"\x89PNG\r\n\x1a\n"))
+
+    def test_png_rejects_text_metadata(self):
+        import struct
+        import zlib
+        data = b"hidden text"
+        chunk = b"tEXt" + data
+        png = b"\x89PNG\r\n\x1a\n" + struct.pack(">I", len(data)) + chunk + struct.pack(">I", zlib.crc32(chunk))
+        self.assertIn("unexpected-png-chunk", png_rules(png))
+
     def test_private_key_marker_detected(self):
         marker = "-----BEGIN " + "PRIVATE KEY-----"
         self.assertIn("private-key", secret_rules(marker))
