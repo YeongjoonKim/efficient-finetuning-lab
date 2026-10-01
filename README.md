@@ -1,106 +1,123 @@
 # Efficient Fine-tuning Lab
 
-## 01 Overview
+### Reproducible Parameter-efficient Fine-tuning을 위한 실행 기록과 평가 경계
 
-An executed CPU experiment learns a rank-one adapter around a frozen synthetic linear model. A **separate, unexecuted** PEFT recipe describes opt-in public-model LoRA/QLoRA. **11 behavioral tests** validate the toy learning loop and execution gates; they do not measure language-model improvement.
+Dataset · Frozen Base · LoRA · Checkpoint · Evaluation · Inference
+
+[![CI](https://github.com/YeongjoonKim/efficient-finetuning-lab/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/YeongjoonKim/efficient-finetuning-lab/actions/workflows/ci.yml)
+
+## 실험이 남겨야 하는 것
+
+어떤 데이터로 무엇을 학습했고, base가 실제로 고정됐는지, checkpoint로 다시 추론할 수 있는지를
+확인할 수 있어야 합니다. 이 저장소는 **실제로 실행한 CPU 저랭크 실험**과
+**아직 실행 검증하지 않은 공개 모델 PEFT recipe**를 분리합니다.
+
+관리자 대시보드를 만들어 실험 성과처럼 보이게 하지 않습니다.
+대신 config, split hash, frozen base hash, checkpoint와 holdout 결과를 코드·artifact로 제공합니다.
 
 This repository is a sanitized and reconstructed technical showcase based on engineering experience from a private production AI platform.
 It does not contain proprietary source code, private data, internal APIs, or production configuration.
 
-본 저장소는 비공개 운영 AI 시스템의 설계·개발 경험을 기반으로 독립 재구성한 공개 기술 예제입니다. 회사 소스, 비공개 데이터, 내부 API 및 운영 설정은 포함하지 않습니다.
+## Experiment Architecture
 
-## 02 Problem
+![Experiment architecture](docs/architecture/01_experiment_architecture.svg)
 
-Parameter-efficient training needs a clear account of what changed, which data was held out and what can actually be reproduced. Configuration alone is not experimental evidence.
+Dataset → Preprocessing → Base Model → LoRA / QLoRA → Training
+→ Checkpoint → Evaluation → Inference.
 
-## 03 Architecture
+| Track | 상태 | 입증하는 것 | 입증하지 못하는 것 |
+|---|---|---|---|
+| CPU rank-one experiment | IMPLEMENTED | frozen base 위 adapter gradient update, holdout, 추론 | LLM/VLM 품질·실전 일반화 |
+| Public-model PEFT recipe | PARTIAL | dry-run 구성과 실행 gate, LoRA/NF4 QLoRA 코드 | 의존성 호환·학습 성공·메모리 절감 |
+| Task benchmark / resource profile | PROPOSED | 후속 평가 설계 | 완료된 결과가 아님 |
 
-![Reference architecture](docs/architecture/01_experiment_architecture.svg)
+## 실제 Experiment Evidence
 
-[Editable Mermaid and diagram scope](docs/architecture/README.md).
-Statuses are **IMPLEMENTED / PARTIAL / PROPOSED**; synthetic/mock describes the
-dependency or data, not an additional implementation status.
+[실행 artifact](examples/execution.json)는 `python3 -m src.export_evidence`의 실제 출력입니다.
+환경은 artifact에 기록되며 외부 모델이나 운영 학습 파일을 사용하지 않았습니다.
 
-## 04 Key Engineering Decisions
+| 항목 | 기록 |
+|---|---|
+| Dataset | seed=19의 합성 입력; train 24 / holdout 12 |
+| Experiment Config | steps=180, learning_rate=0.12, alpha=1.0 |
+| Base / Adapter | frozen 16 parameters / trainable 8 parameters |
+| Holdout MSE before | 0.01621627 |
+| Holdout MSE after | 0.01428599 |
+| Frozen base | 학습 전후 hash 동일 |
+| Checkpoint format | synthetic-rank-one-v1; a, b, alpha 및 hash |
+| Inference input | [0.2, -0.1, 0.4, 0.3] |
 
-Separate executed CPU low-rank learning from unexecuted model recipes. Freeze the base, separate train/holdout inputs and hash artifacts. Gate optional execution on revision, license acknowledgement and local weights.
+이 감소는 의도적으로 쉬운 rank-one 합성 목표에 한정됩니다.
+언어모델 성능 향상이나 실작물 이미지 진단 성능으로 환산하지 않습니다.
 
-[Design decisions](docs/design-decisions.md).
+### Checkpoint / Inference
 
-## 05 Implementation
+저장된 어댑터 값을 이용한 실제 출력:
 
-IMPLEMENTED: analytic CPU gradient updates, 8 trainable vs 16 frozen parameters, separate deterministic train/holdout sets and base/checkpoint hashes. PARTIAL: optional PEFT training recipe, dry-run and gate-tested only. PROPOSED: pinned dependency environment, executed public-model experiment and task-level/resource comparison.
+```json
+[0.16199854,-0.0269989,-0.08400073,0.16199817]
+```
 
-The uniform 4-bit rounding proxy is **not NF4, double quantization or QLoRA**, and does not pack tensors or demonstrate memory savings.
+[Exporter](src/export_evidence.py) · [학습 코드](src/toy_lora.py) ·
+[Artifact 재계산 검사](tests/test_evidence.py).
+환경에 따라 미세한 부동소수점 차이가 생기므로 교차 Python 버전 비교는 tolerance를 사용합니다.
+snapshot 원문은 숫자 타입을 유지해 checkpoint hash와 일치시킵니다.
 
-The optional candidate is [Qwen2.5-0.5B](https://huggingface.co/Qwen/Qwen2.5-0.5B).
-Review its Apache-2.0 model card and exact revision terms. Optional execution requires
-a full 40-character revision, cached public safetensors and explicit license acknowledgement;
-remote code and downloads are disabled. LoRA uses a frozen base; the QLoRA recipe uses
-NF4, double quantization and PEFT preparation following the
-[official guide](https://huggingface.co/docs/peft/developer_guides/quantization).
-Dependencies are torch, transformers, peft and (QLoRA) bitsandbytes. **No tested lockfile
-or model execution is supplied.** QLoRA additionally requires compatible CUDA/bfloat16.
-Outputs use a new ignored directory. Never schedule training from CI.
+## LoRA / QLoRA의 구분
 
-Workspace experience includes LoRA/QLoRA configuration, ms-swift orchestration and
-vision-language workflows; it is not a claim of measured private-model improvement.
-[ms-swift reference](https://swift.readthedocs.io/en/v3.11/Instruction/Command-line-parameters.html)
-is contextual, not an execution-tested dependency.
+CPU 예제는 고정 선형 base에 저랭크 adapter만 학습합니다.
+`--quantized-proxy`는 균일 4-bit 반올림 설명용이며 **NF4·double quantization·QLoRA가 아닙니다**.
+packed tensor나 GPU memory saving을 구현했다고 주장하지 않습니다.
 
-## 06 Example
+선택 PEFT 경로는 [Qwen2.5-0.5B](https://huggingface.co/Qwen/Qwen2.5-0.5B)를 후보로 합니다.
+정확한 40자리 model revision, 로컬 cache, license 확인이 필요합니다.
+remote code와 모델 다운로드는 비활성화되어 있습니다.
+QLoRA recipe는 [공식 PEFT 안내](https://huggingface.co/docs/peft/developer_guides/quantization)에 따라
+NF4 / double quantization / preparation을 구성하지만 **실제 모델 학습은 이번 공개 검증에서 실행하지 않았습니다**.
 
-Run the toy experiment, optionally --quantized-proxy. The optional_peft module defaults to a non-executing plan. Do not use --execute without separate resource and license approval.
+torch, transformers, peft 및 QLoRA용 bitsandbytes의 검증된 lockfile은 아직 없습니다.
+QLoRA에는 별도 CUDA/bfloat16 환경 검증도 필요합니다. 기본 예제와 CI는 GPU를 사용하지 않습니다.
 
-[Example instructions](examples/README.md).
+## Reproduce / Quick Start
 
-## 07 Evaluation
-
-11 behavioral tests plus five repository-quality checks run without models,
-network or GPU. Counts are regression coverage, not model-quality scores.
-[Evaluation](docs/evaluation.md) · [Local validation](docs/validation.md).
-
-## 08 Failure / Limitations
-
-The target is deliberately easy and rank-one, not a language benchmark. Uniform 4-bit rounding is not NF4/QLoRA or a memory-saving implementation. Optional PEFT execution and dependency compatibility are unvalidated.
-
-[Failure boundaries](docs/limitations.md).
-
-## 09 Reproducibility
-
-Default sample: Python 3.10+ standard library; no package install, credentials or service
-required. Run from the repository root. Synthetic inputs and explicit logic support
-local comparison, not reproduction of a private platform.
-[Maintenance](docs/maintenance.md).
-
-## 10 Repository Structure
-
-- `src/`: independently written sample modules.
-- `examples/`: synthetic inputs or invocation guide.
-- `tests/`: behavior and repository-quality regression tests.
-- `docs/`: architecture, decisions, evaluation and limitations.
-- `scripts/` and `.github/`: local checks and CI configuration.
-
-## 11 Quick Start
+Python 3.10+ 표준 라이브러리만으로 기본 실험을 실행합니다.
 
 ```sh
 python3 -m src.toy_lora
-python3 -m unittest discover -s tests -v
-python3 scripts/check_repository.py
+python3 -m src.export_evidence
 python3 -m src.toy_lora --quantized-proxy
 python3 -m src.optional_peft --mode qlora
+python3 -m unittest discover -s tests -v
+python3 scripts/check_repository.py
 ```
 
-CI targets Python 3.10 and 3.12. Hosted runs are pending publication.
-Do not add `--execute`: actual public-model training has not been approved or validated here.
+마지막 recipe는 dry-run입니다. `--execute`는 환경·모델 권리·자원 사용을 별도로 확인한 경우에만
+지정해야 합니다. 운영 모델 serving을 멈추거나 training을 자동 시작하지 않습니다.
 
-## 12 Research Relevance
+## Evaluation / Failure Analysis
 
-Extend to licensed task datasets, pinned model revisions, held-out task metrics and resource profiling. A deliberately easy rank-one target does not establish real-data generalization.
+19개 테스트는 loss 감소, frozen base, deterministic checkpoint, split 분리,
+설정 거부, 선택형 학습 gate, 저장된 artifact와 재계산 및 저장소 검사기를 검증합니다.
+seed만으로 모든 하드웨어에서 bitwise replay를 보장하지는 않습니다.
 
-MY CONTRIBUTION: author-confirmed engineering work. PLATFORM CONTEXT: private workflows
-described conceptually. PUBLIC RECONSTRUCTION: this independent example.
-FUTURE RESEARCH: unimplemented evaluation and integrations.
+[평가 범위](docs/evaluation.md) · [설계 결정](docs/design-decisions.md) ·
+[한계](docs/limitations.md) · [검증 기록](docs/validation.md).
 
-[Publication review](PUBLICATION.md) · [License notice](LICENSE-NOTICE.md) ·
-[Security](SECURITY.md). No open-source license has been selected.
+## Repository Structure / Research Relevance
+
+`src/`에는 CPU 실험·선택 recipe·exporter,
+`examples/`에는 실제 experiment record, `tests/`에는 계약 검사,
+`docs/`에는 architecture·평가·한계, `.github/`에는 CPU CI가 있습니다.
+
+훈련 데이터·모델 lifecycle과 ms-swift 기반 구성 경험을 공개 재구성의 배경으로 설명합니다.
+[ms-swift reference](https://swift.readthedocs.io/en/v3.11/Instruction/Command-line-parameters.html)는
+참고 자료이지 검증된 번들 의존성이 아닙니다.
+
+다음 연구 단계는 독립 task holdout, adapter/base/dataset revision 고정, 자원량 프로파일링,
+효과 크기와 실패 사례 비교입니다. 비공개 모델 성과나 연관 없는 논문의 기여를 붙이지 않습니다.
+
+MY CONTRIBUTION: 학습 데이터·모델 lifecycle engineering.
+PLATFORM CONTEXT: 비공개 학습 workflow. PUBLIC RECONSTRUCTION: 합성 CPU 실험과 recipe.
+FUTURE RESEARCH: 실제 공개 모델·독립 task 평가.
+
+[공개 경계](PUBLICATION.md) · [License notice](LICENSE-NOTICE.md) · [Security](SECURITY.md).

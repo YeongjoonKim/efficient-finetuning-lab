@@ -1,0 +1,62 @@
+{
+  "scope": "executed_synthetic_cpu_experiment_not_llm_training",
+  "experiment": {
+    "disclosure": "Reconstructed Public Experiment",
+    "scope": "linear_rank_one_not_llm_not_qlora",
+    "config": {
+      "seed": 19,
+      "steps": 180,
+      "learning_rate": 0.12,
+      "alpha": 1.0,
+      "quantized_proxy": false
+    },
+    "base_hash_before": "d09d37eb7e0097abf0c216201f96ae59df7c7dff626caa2a084c2334a770d38a",
+    "base_hash_after": "d09d37eb7e0097abf0c216201f96ae59df7c7dff626caa2a084c2334a770d38a",
+    "train_hash": "23638a5b0cbdd7e9798b1e534e3afe75a408e1c5493384b4b10dc2798eb7d456",
+    "holdout_hash": "fd56f15d5f2f90f90c8ef4c810805e3406faf3b0c5ca2cd283adbeaa012be2b8",
+    "base_parameters": 16,
+    "trainable_parameters": 8,
+    "holdout_mse_before": 0.016216271461521076,
+    "holdout_mse_after": 0.014285985705433046,
+    "checkpoint": {
+      "format": "synthetic-rank-one-v1",
+      "a": [
+        -0.1740129457199219,
+        0.05255390528981791,
+        0.10504090404677706,
+        -0.006460275589700427
+      ],
+      "b": [
+        -0.071949770705454,
+        0.05396232802909047,
+        -0.035974885352727,
+        -0.08993721338181751
+      ],
+      "alpha": 1.0
+    },
+    "checkpoint_hash": "9af0b7bf643fbd992b7308d91dd4d497f38065adfaa4523bc5d77da693db24e7",
+    "environment": {
+      "python": "3.10.12",
+      "dependencies": "stdlib"
+    },
+    "limitations": [
+      "Synthetic regression only",
+      "No language or vision quality measured",
+      "4-bit proxy is not NF4 and does not measure memory savings"
+    ]
+  },
+  "inference": {
+    "input": [
+      0.2,
+      -0.1,
+      0.4,
+      0.3
+    ],
+    "output": [
+      0.16199853947226187,
+      -0.026998904604196405,
+      -0.08400073026386909,
+      0.16199817434032734
+    ]
+  }
+}
