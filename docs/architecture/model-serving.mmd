@@ -1,0 +1,10 @@
+flowchart LR
+  A[Public images / uploads] --> B[Review / deduplicate / approve]
+  B --> C[Class-aware dataset build]
+  C --> D[Qwen 35B: NF4 QLoRA]
+  D --> E[Checkpoints 400 / 500 / 531]
+  E --> F[Monitoring / checkpoint selection]
+  F --> G[Direct adapter loading: observed]
+  G --> H[vLLM: TP4 / base and adapter]
+  H --> I[VLM application path]
+  F -. Implemented alternative .-> J[Merge / apply workflow]

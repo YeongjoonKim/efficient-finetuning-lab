@@ -1,5 +1,13 @@
 # Independently authored architecture
 
+## Actual Training / Serving
+
+[Observed Qwen training and serving workflow](model-serving.svg) · [Editable flow](model-serving.mmd).
+이 도식은 2026-10-02 확인한 실제 학습·adapter·serving 책임을 재구성합니다.
+직접 adapter loading은 관측된 경로, merge/apply는 별도 구현 경로입니다.
+
+## Public Experiment Reference
+
 These SVGs and matching Mermaid sources describe generic engineering responsibilities,
 not the topology or names of a private platform.
 
