@@ -1,5 +1,11 @@
 # Changelog — Model Adaptation & Serving
 
+## 2026-10-02 — Technical portfolio polish
+
+- 기존 핵심 학습·서빙 표를 Training & Serving Facts로 통일하고 문장을 자연화했다.
+- 공식 model card/config와 로컬 args·adapter·serving을 대조해 Qwen 모델 ID와 내부 architecture 이름을 설명했다.
+- 530/531 step 문장의 오타를 수정하고 경량 예제 수치를 평가 문서로 옮겼다.
+
 ## 2026-10-02 — Portfolio hardening
 
 - 학습 완료·adapter serving 근거와 공개 CPU 예제의 경계를 정리하고 재현성 항목의 확인/미확인 상태를 명시했다. 새 학습이나 모델 교체는 하지 않았다.

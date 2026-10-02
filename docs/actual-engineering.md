@@ -17,11 +17,32 @@
 
 실행 ID: v0-20260724-144112. ms-swift SFT, batch size 1, gradient accumulation 16,
 learning rate 0.0001, max length 2048, epochs 3. Vision encoder를 고정하고 language-side adapter를 학습합니다.
-모델의 transformers architecture 식별자는 Qwen3_5MoeForConditionalGeneration입니다.
-이는 로컬 Qwen3.6 model card 및 학습 경로와 함께 확인한 호환 architecture 명칭입니다.
+모델의 Transformers architecture 식별자는 `Qwen3_5MoeForConditionalGeneration`입니다.
+공식 Qwen3.6 모델의 config가 사용하는 내부 클래스명이며 아래 Model Identity에서 근거를 연결합니다.
 
 학습 스크립트는 4개 GPU에 단일 프로세스 device_map auto로 배치합니다.
 이를 DDP 학습으로 표현하지 않습니다. YOLO의 DDP 학습과도 별도입니다.
+
+## Model Identity
+
+2026-10-02 공식 배포 자료와 로컬 학습·서빙 산출물을 재대조했습니다.
+
+| 구분 | 확인 결과 |
+|---|---|
+| 공식 Model ID | `Qwen/Qwen3.6-35B-A3B` — Qwen 공식 조직의 배포 이름 |
+| 공식 config | architectures: `Qwen3_5MoeForConditionalGeneration`, model_type: `qwen3_5_moe` |
+| 로컬 model card / config | 공식 ID가 model card에 있고 위 architecture·model_type과 일치 |
+| Training args / adapter config | 동일 로컬 base 디렉터리, NF4·double quantization, rank 16 / alpha 32 |
+| Completed state | checkpoint-531의 global_step=max_steps=531, epoch=3 |
+| Serving mount / arguments | 같은 base 디렉터리, TP4, LoRA enabled, checkpoint-531 직접 loading |
+| vLLM model list | base와 `pest-vision` adapter의 parent 관계 확인 |
+
+따라서 Qwen3.6-35B-A3B는 로컬 임의 alias가 아니라 공식 모델 이름입니다.
+서비스의 served-model-name과 Transformers 내부 architecture 식별자는 이 모델 이름과 역할이 다릅니다.
+로컬 파일의 공식 revision·전체 weight hash 고정은 별도의 [재현성 과제](reproducibility.md)입니다.
+
+출처: [공식 model card](https://huggingface.co/Qwen/Qwen3.6-35B-A3B),
+[공식 config.json](https://huggingface.co/Qwen/Qwen3.6-35B-A3B/raw/main/config.json).
 
 ## Completion & Evaluation
 

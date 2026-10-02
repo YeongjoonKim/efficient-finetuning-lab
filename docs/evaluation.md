@@ -2,4 +2,8 @@
 
 19개 테스트가 합성 holdout loss, frozen base, checkpoint, split, 설정과 실행 gate, 저장한 artifact 및 저장소 검사기를 확인합니다. Python별 미세한 산술 차이는 tolerance로 비교하며 저장본 checkpoint 자체의 hash도 검사합니다.
 
+CPU 예제는 train 24 / holdout 12의 합성 데이터입니다.
+[실행 artifact](../examples/execution.json)의 holdout MSE는 0.01621627 → 0.01428599입니다.
+CPU의 uniform 4-bit proxy는 LoRA 동작 설명용이며 35B 모델의 NF4 QLoRA 실험과 별개입니다.
+
 후속 연구는 독립적인 task label과 baseline을 분리해야 합니다. 합성 회귀 통과율을 현장 성능으로 해석하지 않습니다.
