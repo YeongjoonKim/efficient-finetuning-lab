@@ -6,6 +6,10 @@
 
 ## Actual Engineering Experience
 
+이 프로젝트는 **Model adaptation → Experiment tracking → Serving**을 다룹니다.
+실제 35B 학습 근거와 공개 CPU toy 실험을 분리하며, 미확인 revision/hash는
+[재현성 목록](docs/reproducibility.md)에 명시합니다.
+
 농업 이미지와 한국어 정답 라벨을 연결하는 데이터셋, **Qwen3.6-35B-A3B의 QLoRA 학습**,
 학습 이력·지표·체크포인트 관리, vLLM adapter serving을 구현했습니다.
 2026-10-02에 설정·완료 로그·checkpoint·실행 컨테이너·모델 목록을 교차 확인했습니다.
