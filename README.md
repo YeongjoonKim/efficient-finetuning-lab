@@ -4,7 +4,7 @@
 
 [![CI](https://github.com/YeongjoonKim/efficient-finetuning-lab/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/YeongjoonKim/efficient-finetuning-lab/actions/workflows/ci.yml)
 
-## 실제 구현 경험
+## 실제 구현 - 파인튜닝_이미지 어댑터(QWen+LoRA)
 
 이 프로젝트는 **Model adaptation → Experiment tracking → Serving**을 다룹니다.
 35B QLoRA 학습·서빙 파이프라인과 경량 공개 재현 예제를 구분해 제공합니다.
