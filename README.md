@@ -1,123 +1,128 @@
 # Efficient Fine-tuning Lab
 
-### Reproducible Parameter-efficient Fine-tuning을 위한 실행 기록과 평가 경계
-
-Dataset · Frozen Base · LoRA · Checkpoint · Evaluation · Inference
+### Qwen 35B QLoRA · Dataset Curation · Experiment Management · vLLM Serving
 
 [![CI](https://github.com/YeongjoonKim/efficient-finetuning-lab/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/YeongjoonKim/efficient-finetuning-lab/actions/workflows/ci.yml)
 
-## 실험이 남겨야 하는 것
+## Actual Engineering Experience
 
-어떤 데이터로 무엇을 학습했고, base가 실제로 고정됐는지, checkpoint로 다시 추론할 수 있는지를
-확인할 수 있어야 합니다. 이 저장소는 **실제로 실행한 CPU 저랭크 실험**과
-**아직 실행 검증하지 않은 공개 모델 PEFT recipe**를 분리합니다.
+농업 이미지와 한국어 정답 라벨을 연결하는 데이터셋, **Qwen3.6-35B-A3B의 QLoRA 학습**,
+학습 이력·지표·체크포인트 관리, vLLM adapter serving을 구현했습니다.
+2026-10-02에 설정·완료 로그·checkpoint·실행 컨테이너·모델 목록을 교차 확인했습니다.
 
-관리자 대시보드를 만들어 실험 성과처럼 보이게 하지 않습니다.
-대신 config, split hash, frozen base hash, checkpoint와 holdout 결과를 코드·artifact로 제공합니다.
-
-This repository is a sanitized and reconstructed technical showcase based on engineering experience from a private production AI platform.
-It does not contain proprietary source code, private data, internal APIs, or production configuration.
-
-## Experiment Architecture
-
-![Experiment architecture](docs/architecture/01_experiment_architecture.svg)
-
-Dataset → Preprocessing → Base Model → LoRA / QLoRA → Training
-→ Checkpoint → Evaluation → Inference.
-
-| Track | 상태 | 입증하는 것 | 입증하지 못하는 것 |
-|---|---|---|---|
-| CPU rank-one experiment | IMPLEMENTED | frozen base 위 adapter gradient update, holdout, 추론 | LLM/VLM 품질·실전 일반화 |
-| Public-model PEFT recipe | PARTIAL | dry-run 구성과 실행 gate, LoRA/NF4 QLoRA 코드 | 의존성 호환·학습 성공·메모리 절감 |
-| Task benchmark / resource profile | PROPOSED | 후속 평가 설계 | 완료된 결과가 아님 |
-
-## 실제 Experiment Evidence
-
-[실행 artifact](examples/execution.json)는 `python3 -m src.export_evidence`의 실제 출력입니다.
-환경은 artifact에 기록되며 외부 모델이나 운영 학습 파일을 사용하지 않았습니다.
-
-| 항목 | 기록 |
+| 실제 확인 항목 | 결과 |
 |---|---|
-| Dataset | seed=19의 합성 입력; train 24 / holdout 12 |
-| Experiment Config | steps=180, learning_rate=0.12, alpha=1.0 |
-| Base / Adapter | frozen 16 parameters / trainable 8 parameters |
-| Holdout MSE before | 0.01621627 |
-| Holdout MSE after | 0.01428599 |
-| Frozen base | 학습 전후 hash 동일 |
-| Checkpoint format | synthetic-rank-one-v1; a, b, alpha 및 hash |
-| Inference input | [0.2, -0.1, 0.4, 0.3] |
+| Base model | **Qwen/Qwen3.6-35B-A3B** — 총 35B, 활성 3B MoE |
+| Training | ms-swift · bitsandbytes **4-bit NF4 + double quantization** · bfloat16 compute |
+| Adapter | LoRA rank 16 / alpha 32 · all-linear · vision encoder frozen |
+| Completed run | 3 epochs · **531 / 531 steps** · checkpoint-531 |
+| Final evaluation | loss **0.19017857**, token accuracy **0.95468998** |
+| Serving | vLLM · tensor parallel 4 · rank 16 adapter · 모델 목록에서 adapter 확인 |
 
-이 감소는 의도적으로 쉬운 rank-one 합성 목표에 한정됩니다.
-언어모델 성능 향상이나 실작물 이미지 진단 성능으로 환산하지 않습니다.
+Token accuracy는 정답 시퀀스의 토큰 단위 지표이며 진단 정확도와 구분합니다.
+[상세 근거와 지표 정의](docs/actual-engineering.md).
 
-### Checkpoint / Inference
+## Training & Serving Architecture
 
-저장된 어댑터 값을 이용한 실제 출력:
+![Actual training and serving workflow](docs/architecture/model-serving.svg)
 
-```json
-[0.16199854,-0.0269989,-0.08400073,0.16199817]
-```
+공공 이미지 / 검수된 수집분 → 클래스별 데이터셋 → QLoRA → 지표·checkpoint
+→ adapter loading → vLLM → 이미지 모델을 사용하는 애플리케이션.
 
-[Exporter](src/export_evidence.py) · [학습 코드](src/toy_lora.py) ·
-[Artifact 재계산 검사](tests/test_evidence.py).
-환경에 따라 미세한 부동소수점 차이가 생기므로 교차 Python 버전 비교는 tolerance를 사용합니다.
-snapshot 원문은 숫자 타입을 유지해 checkpoint hash와 일치시킵니다.
+학습 watcher에 데이터셋 재구성·작업 상태 관리·모델 적용 경로를 연결했습니다.
+현재 serving은 **checkpoint-531 직접 adapter loading**입니다.
+merge 후 적용 경로도 구현되어 있으며 현재 사용 경로와 구분해 설명합니다.
 
-## LoRA / QLoRA의 구분
+## Training Monitoring
 
-CPU 예제는 고정 선형 base에 저랭크 adapter만 학습합니다.
-`--quantized-proxy`는 균일 4-bit 반올림 설명용이며 **NF4·double quantization·QLoRA가 아닙니다**.
-packed tensor나 GPU memory saving을 구현했다고 주장하지 않습니다.
+**Purpose** — 실행별 설정과 진행 상태를 같은 화면에서 확인합니다.
 
-선택 PEFT 경로는 [Qwen2.5-0.5B](https://huggingface.co/Qwen/Qwen2.5-0.5B)를 후보로 합니다.
-정확한 40자리 model revision, 로컬 cache, license 확인이 필요합니다.
-remote code와 모델 다운로드는 비활성화되어 있습니다.
-QLoRA recipe는 [공식 PEFT 안내](https://huggingface.co/docs/peft/developer_guides/quantization)에 따라
-NF4 / double quantization / preparation을 구성하지만 **실제 모델 학습은 이번 공개 검증에서 실행하지 않았습니다**.
+![Actual training history and summary](docs/screenshots/training-summary.png)
 
-torch, transformers, peft 및 QLoRA용 bitsandbytes의 검증된 lockfile은 아직 없습니다.
-QLoRA에는 별도 CUDA/bfloat16 환경 검증도 필요합니다. 기본 예제와 CI는 GPU를 사용하지 않습니다.
+**What this demonstrates** — 실행 이력, train/eval 지표, hyperparameter 조회가 실제 학습 산출물에 연결됩니다.
+화면은 마지막 train 로그인 530 step을 표시하고 완료는 trainer state의 531 step으로 확인했습니다.
+**Architecture relation** — Training → Experiment Tracking.
 
-## Reproduce / Quick Start
+### Training Curves
 
-Python 3.10+ 표준 라이브러리만으로 기본 실험을 실행합니다.
+**Purpose** — loss·token accuracy·gradient norm·learning rate로 학습 진행을 관찰합니다.
+
+![Actual training curves](docs/screenshots/training-curves.png)
+
+**What this demonstrates** — 저장된 train/eval 로그의 네 가지 그래프.
+**Architecture relation** — Training → Monitoring → Checkpoint selection.
+
+## Dataset Acquisition & Curation
+
+공공 병해충 이미지·온실 이미지·관리자 업로드·외부 수집 staging을 공통 학습 형식으로 연결했습니다.
+외부 수집은 중복 검사·라벨 검토·승인·commit을 거쳐 다음 데이터셋 빌드에 반영됩니다.
+
+캡처 시점 활성 데이터셋은 **train 2,822 / validation 135 / 855 labels**입니다.
+외부 수집분 **4,520장은 다음 빌드 대기**이며 완료된 학습의 사용량에 더하지 않습니다.
+
+**Purpose** — 정답 라벨별 수량과 이미지를 함께 보며 불균형·라벨 오류를 검토합니다.
+
+![Actual label counts and training samples](docs/screenshots/training-label-samples.png)
+
+**What this demonstrates** — 클래스 검색, 소스 필터, 선택 라벨의 이미지·split drill-down.
+**Architecture relation** — Acquisition → Curation → Dataset.
+
+## Checkpoint Management
+
+**Purpose** — 저장된 adapter를 실행 이력과 연결해 선택합니다.
+
+![Actual saved adapters](docs/screenshots/training-checkpoints.png)
+
+**What this demonstrates** — checkpoint-400 / 500 / 531과 모델 적용 인터페이스.
+이번 검토에서는 조회만 수행했으며 학습·모델 교체는 실행하지 않았습니다.
+**Architecture relation** — Training artifact → Deployment decision → Serving.
+
+## System Strengths
+
+| Decision | 구현 효과 |
+|---|---|
+| Dataset visibility | 정답 라벨·출처·split·이미지를 한 흐름에서 검토 |
+| Experiment traceability | args, step별 로그, trainer state, adapter를 실행 단위로 연결 |
+| Parameter-efficient training | quantized base와 학습 가능한 adapter의 역할 분리 |
+| Adapter lifecycle | 학습 완료와 실제 serving model 목록을 각각 확인 |
+
+## Public Reference Implementation & Lightweight Demo
+
+| 구분 | 공개 범위 |
+|---|---|
+| Actual Engineering Experience | 위 Qwen 35B 학습·운영 UI·서빙 관측 |
+| Public Reference Implementation | 선택형 PEFT LoRA / NF4 QLoRA recipe와 실행 gate |
+| Public Lightweight Demo | CPU rank-one 실험, frozen base hash, checkpoint, holdout |
+
+![Public experiment reference architecture](docs/architecture/01_experiment_architecture.svg)
+
+CPU 예제는 train 24 / holdout 12의 합성 데이터로 adapter 업데이트를 빠르게 확인합니다.
+[실행 artifact](examples/execution.json)의 holdout MSE는 0.01621627 → 0.01428599입니다.
+선택형 recipe의 Qwen2.5-0.5B는 **공개 재현용 후보**이며 실제 35B 학습 모델과 별개입니다.
+
+## Experiment Tracking & Reproducibility
+
+Python 3.10+ 표준 라이브러리로 기본 예제를 실행합니다.
 
 ```sh
 python3 -m src.toy_lora
 python3 -m src.export_evidence
-python3 -m src.toy_lora --quantized-proxy
 python3 -m src.optional_peft --mode qlora
 python3 -m unittest discover -s tests -v
 python3 scripts/check_repository.py
 ```
 
-마지막 recipe는 dry-run입니다. `--execute`는 환경·모델 권리·자원 사용을 별도로 확인한 경우에만
-지정해야 합니다. 운영 모델 serving을 멈추거나 training을 자동 시작하지 않습니다.
+선택형 PEFT 명령은 기본 dry-run입니다. 실제 실행에는 고정 revision·로컬 cache·의존성·사용권·GPU 확인이 필요합니다.
+19개 테스트는 frozen base, checkpoint, split, 실행 gate와 artifact 재계산을 검증합니다.
 
-## Evaluation / Failure Analysis
+## Scope & Limitations
 
-19개 테스트는 loss 감소, frozen base, deterministic checkpoint, split 분리,
-설정 거부, 선택형 학습 gate, 저장된 artifact와 재계산 및 저장소 검사기를 검증합니다.
-seed만으로 모든 하드웨어에서 bitwise replay를 보장하지는 않습니다.
+실제 학습 가중치·원천 데이터·회사 소스는 공개하지 않습니다.
+CPU sample의 uniform 4-bit proxy는 설명용이며 실제 NF4 학습과 별개입니다.
+현재 dataset 조회값은 캡처 시점의 상태로 완료 run의 불변 snapshot을 대신하지 않습니다.
+독립 이미지 holdout, 희소 클래스의 검증 coverage, revision 고정,
+자원 프로파일과 failure case 비교를 다음 평가 과제로 남깁니다.
 
-[평가 범위](docs/evaluation.md) · [설계 결정](docs/design-decisions.md) ·
-[한계](docs/limitations.md) · [검증 기록](docs/validation.md).
-
-## Repository Structure / Research Relevance
-
-`src/`에는 CPU 실험·선택 recipe·exporter,
-`examples/`에는 실제 experiment record, `tests/`에는 계약 검사,
-`docs/`에는 architecture·평가·한계, `.github/`에는 CPU CI가 있습니다.
-
-훈련 데이터·모델 lifecycle과 ms-swift 기반 구성 경험을 공개 재구성의 배경으로 설명합니다.
-[ms-swift reference](https://swift.readthedocs.io/en/v3.11/Instruction/Command-line-parameters.html)는
-참고 자료이지 검증된 번들 의존성이 아닙니다.
-
-다음 연구 단계는 독립 task holdout, adapter/base/dataset revision 고정, 자원량 프로파일링,
-효과 크기와 실패 사례 비교입니다. 비공개 모델 성과나 연관 없는 논문의 기여를 붙이지 않습니다.
-
-MY CONTRIBUTION: 학습 데이터·모델 lifecycle engineering.
-PLATFORM CONTEXT: 비공개 학습 workflow. PUBLIC RECONSTRUCTION: 합성 CPU 실험과 recipe.
-FUTURE RESEARCH: 실제 공개 모델·독립 task 평가.
-
-[공개 경계](PUBLICATION.md) · [License notice](LICENSE-NOTICE.md) · [Security](SECURITY.md).
+[상세 근거](docs/actual-engineering.md) · [평가](docs/evaluation.md) ·
+[검증 기록](docs/validation.md) · [공개 경계](PUBLICATION.md) ·
+[License notice](LICENSE-NOTICE.md) · [Security](SECURITY.md).

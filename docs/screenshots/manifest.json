@@ -1,0 +1,10 @@
+{
+  "origin": "reviewed_operational_derivatives_and_public_execution_captures",
+  "files": {
+    "docs/screenshots/training-checkpoints.png": "4f927fec9ef10d700ff45a5557a48ce49f909bd574608f91e8475ec0b24456e2",
+    "docs/screenshots/training-curves.png": "5760a48a18ad31a0fb867edf6ef30559d2b4e42f141a93901f8ef1a2b208a180",
+    "docs/screenshots/training-label-samples.png": "2d29305c35974d1093d97de52dc7c4299d1f15176fb195da126f86786f38c9ba",
+    "docs/screenshots/training-summary.png": "c6c853c194dd1372963fb8571fee954de19c0b8763279c0646695f5af7f584da"
+  },
+  "policy": "Owner-approved local opaque masking/crops. Actual engineering captures are separate from public synthetic examples. Originals preserved privately."
+}
