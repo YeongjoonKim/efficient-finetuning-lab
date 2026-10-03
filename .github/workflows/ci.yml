@@ -23,6 +23,8 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Syntax, local links, JSON and heuristic secret check
         run: python3 scripts/check_repository.py
+      - name: Architecture SVG and Mermaid sync
+        run: python3 scripts/render_architecture.py --check
       - name: Regression tests
         run: python3 -m unittest discover -s tests -v
       - name: Offline example smoke

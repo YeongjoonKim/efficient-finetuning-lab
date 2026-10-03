@@ -1,0 +1,188 @@
+[
+  {
+    "file": "01_experiment_architecture",
+    "title": "Model adaptation and reproducible experiments",
+    "scope": "Implemented training / serving and independent public code",
+    "lanes": [
+      {
+        "title": "ACTUAL QLORA ENGINEERING",
+        "nodes": [
+          {
+            "title": "Review dataset",
+            "lines": [
+              "Labels / sources / split",
+              "Class-aware build"
+            ]
+          },
+          {
+            "title": "Qwen 35B QLoRA",
+            "lines": [
+              "NF4 + double quantization",
+              "Rank 16 / frozen vision"
+            ]
+          },
+          {
+            "title": "Track checkpoint",
+            "lines": [
+              "Args / curves / state",
+              "Completed adapter files"
+            ]
+          },
+          {
+            "title": "vLLM serving",
+            "lines": [
+              "Direct adapter loading",
+              "Base / adapter model list"
+            ]
+          }
+        ],
+        "serial": true
+      },
+      {
+        "title": "PUBLIC CPU EXPERIMENT",
+        "nodes": [
+          {
+            "title": "Synthetic dataset",
+            "lines": [
+              "Seeded train / holdout",
+              "Dataset digest"
+            ]
+          },
+          {
+            "title": "Frozen linear base",
+            "lines": [
+              "Rank-one adapter",
+              "Only adapter is updated"
+            ]
+          },
+          {
+            "title": "Evaluate + save",
+            "lines": [
+              "Training / holdout loss",
+              "Checkpoint / manifest"
+            ]
+          },
+          {
+            "title": "Reload + verify",
+            "lines": [
+              "Base hash preserved",
+              "Deterministic inference"
+            ]
+          }
+        ],
+        "serial": true
+      },
+      {
+        "title": "PUBLIC OPTIONAL RECIPE",
+        "nodes": [
+          {
+            "title": "Recipe configuration",
+            "lines": [
+              "LoRA or NF4 QLoRA",
+              "Small model configuration"
+            ]
+          },
+          {
+            "title": "Execution gates",
+            "lines": [
+              "Dry-run by default",
+              "Revision / local cache"
+            ]
+          },
+          {
+            "title": "PEFT training entry",
+            "lines": [
+              "Explicit opt-in only",
+              "Runtime dependencies"
+            ]
+          },
+          {
+            "title": "Run artifacts",
+            "lines": [
+              "Recipe / checkpoint",
+              "Evaluation output"
+            ]
+          }
+        ],
+        "serial": true
+      }
+    ],
+    "note": "The CPU experiment and optional recipe are separate from the observed 35B training run."
+  },
+  {
+    "file": "model-serving",
+    "title": "Training control and adapter serving",
+    "scope": "Implemented management workflow · observed direct-loading path",
+    "lanes": [
+      {
+        "title": "CONTROL AND TRAINING",
+        "nodes": [
+          {
+            "title": "Admin training UI",
+            "lines": [
+              "Run history / checkpoints",
+              "Authenticated actions"
+            ]
+          },
+          {
+            "title": "API request flags",
+            "lines": [
+              "Training / apply request",
+              "No browser Docker access"
+            ]
+          },
+          {
+            "title": "Host watcher",
+            "lines": [
+              "Train / merge-export action",
+              "Logs and result status"
+            ]
+          },
+          {
+            "title": "Training artifacts",
+            "lines": [
+              "Args / state / adapter",
+              "Loss / token accuracy"
+            ]
+          }
+        ],
+        "serial": true
+      },
+      {
+        "title": "OBSERVED SERVING PATH",
+        "nodes": [
+          {
+            "title": "Completed adapter",
+            "lines": [
+              "Checkpoint-531",
+              "531 steps / epoch 3"
+            ]
+          },
+          {
+            "title": "Direct adapter loading",
+            "lines": [
+              "Configured base + adapter",
+              "Separate from merge/apply"
+            ]
+          },
+          {
+            "title": "vLLM model service",
+            "lines": [
+              "Tensor parallel 4",
+              "LoRA rank 16"
+            ]
+          },
+          {
+            "title": "Model observation",
+            "lines": [
+              "Base / adapter relationship",
+              "Admin status / model list"
+            ]
+          }
+        ],
+        "serial": true
+      }
+    ],
+    "note": "An implemented merge/apply control is shown separately from the observed direct adapter registration."
+  }
+]

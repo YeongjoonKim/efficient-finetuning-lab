@@ -30,8 +30,8 @@ Eval token accuracy는 정답 시퀀스의 토큰 단위 지표이며 진단 정
 
 ![데이터셋부터 QLoRA 학습과 vLLM 서빙까지](docs/architecture/model-serving.svg)
 
-공공 이미지 / 검수된 수집분 → 클래스별 데이터셋 → QLoRA → 지표·checkpoint
-→ adapter loading → vLLM → 이미지 모델을 사용하는 애플리케이션.
+관리자 요청 → API 제어 파일 → 호스트 watcher → 학습·산출물 관리와
+완료 adapter → vLLM 직접 loading의 두 흐름을 구분합니다.
 
 학습 관리 서비스에 데이터셋 재구성·작업 상태 관리·모델 적용 경로를 연결했습니다.
 현재 serving은 **checkpoint-531 직접 adapter loading**입니다.
@@ -64,9 +64,12 @@ merge 후 적용 경로도 구현되어 있으며 현재 사용 경로와 구분
 
 ## 체크포인트 관리
 
-![저장된 adapter와 체크포인트 관리](docs/screenshots/training-checkpoints.png)
+![현재 관리자에서 조회한 adapter 적용 대상](docs/screenshots/adapter-checkpoints.png)
 
 checkpoint-400 / 500 / 531을 실행 이력과 연결하고 모델 적용 대상으로 선택합니다.
+관리자 API는 실행 요청을 남기고 호스트 watcher가 학습·적용 작업을 처리합니다.
+모델 적용 버튼의 merge/apply 경로와 현재 vLLM의 직접 adapter loading은 별도로 관리합니다.
+[관리자 제어와 촬영 조건](docs/actual-engineering.md#administrator-control).
 
 ## 시스템 설계의 강점
 
@@ -85,7 +88,7 @@ checkpoint-400 / 500 / 531을 실행 이력과 연결하고 모델 적용 대상
 | Public Reference Implementation | 선택형 PEFT LoRA / NF4 QLoRA recipe와 실행 gate |
 | Public Lightweight Demo | CPU rank-one 실험, frozen base hash, checkpoint, holdout |
 
-![Public experiment reference architecture](docs/architecture/01_experiment_architecture.svg)
+![실제 모델 적응과 독립 공개 실험의 범위](docs/architecture/01_experiment_architecture.svg)
 
 CPU 예제는 합성 데이터로 adapter 업데이트와 frozen base, checkpoint 재현을 확인합니다.
 [실행 artifact](examples/execution.json)의 상세 수치는 [평가 문서](docs/evaluation.md)에 정리했습니다.

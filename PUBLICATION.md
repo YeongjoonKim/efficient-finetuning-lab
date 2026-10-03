@@ -14,3 +14,5 @@ Status: PUBLICATION APPROVED for this independent evidence package.
 크롭/불투명 마스킹한 PNG로 관리한다. 테이블명은 사용자 승인 범위에 포함되지만 운영 데이터는 아니다.
 공개 승인과 IP/NDA 적합성 및 오픈소스 license 부여는 별개의 판단이다.
 [License notice](LICENSE-NOTICE.md) · [Security](SECURITY.md).
+
+2026-10-03 추가 공개 범위: 사용자 요청에 따라 현재 관리자 기능의 조회 전용 화면과 일반화한 실행 책임 도식을 보강했습니다. 원본 코드·호스트 경로·설정·개인 데이터는 포함하지 않습니다.
