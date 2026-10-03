@@ -1,40 +1,95 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="1090" viewBox="0 0 1160 1090" role="img" aria-labelledby="title desc">
-<title id="title">Parameter-efficient experiment lifecycle</title><desc id="desc">Independently reconstructed generic architecture. Implemented, partial and proposed nodes are explicitly distinguished. This is not a production system map.</desc>
-<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8" fill="#8a9aab"/></marker></defs>
-<rect width="1160" height="1090" fill="#f3f6fa"/>
-<text x="40" y="48" font-family="sans-serif" font-size="25" font-weight="700" fill="#15304c">Parameter-efficient experiment lifecycle</text>
-<text x="40" y="82" font-family="sans-serif" font-size="15" fill="#506177">Reconstructed Public Showcase · generic reference, not production topology</text>
-<path d="M580 222 L580 254" stroke="#8a9aab" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
-<path d="M580 347 L580 379" stroke="#8a9aab" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
-<path d="M580 472 L401 504" stroke="#8a9aab" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
-<path d="M580 472 L759 504" stroke="#8a9aab" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
-<path d="M401 597 L580 629" stroke="#8a9aab" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
-<path d="M759 597 L580 629" stroke="#8a9aab" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
-<path d="M580 722 L580 754" stroke="#8a9aab" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
-<path d="M580 847 L580 879" stroke="#8a9aab" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
-<rect x="410" y="135" width="340" height="87" rx="10" fill="#dff3e7" stroke="#aebfce"/>
-<text x="580" y="161" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#15304c">Synthetic dataset</text>
-<text x="580" y="208" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#4c6072">IMPLEMENTED</text>
-<rect x="410" y="260" width="340" height="87" rx="10" fill="#dff3e7" stroke="#aebfce"/>
-<text x="580" y="286" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#15304c">Seeded split / digest</text>
-<text x="580" y="333" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#4c6072">IMPLEMENTED</text>
-<rect x="410" y="385" width="340" height="87" rx="10" fill="#dff3e7" stroke="#aebfce"/>
-<text x="580" y="411" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#15304c">Frozen linear base</text>
-<text x="580" y="458" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#4c6072">IMPLEMENTED</text>
-<rect x="231" y="510" width="340" height="87" rx="10" fill="#dff3e7" stroke="#aebfce"/>
-<text x="401" y="536" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#15304c">Rank-one adapter</text>
-<text x="401" y="583" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#4c6072">IMPLEMENTED</text>
-<rect x="589" y="510" width="340" height="87" rx="10" fill="#e7edf5" stroke="#aebfce" stroke-dasharray="5 4"/>
-<text x="759" y="536" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#15304c">LLM LoRA / QLoRA</text>
-<text x="759" y="583" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#4c6072">PROPOSED</text>
-<rect x="410" y="635" width="340" height="87" rx="10" fill="#e9e2fa" stroke="#aebfce"/>
-<text x="580" y="661" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#15304c">Training / holdout loss</text>
-<text x="580" y="708" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#4c6072">PARTIAL</text>
-<rect x="410" y="760" width="340" height="87" rx="10" fill="#dff3e7" stroke="#aebfce"/>
-<text x="580" y="786" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#15304c">Checkpoint / manifest</text>
-<text x="580" y="833" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#4c6072">IMPLEMENTED</text>
-<rect x="410" y="885" width="340" height="87" rx="10" fill="#dff3e7" stroke="#aebfce"/>
-<text x="580" y="911" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#15304c">Inference / limits</text>
-<text x="580" y="958" text-anchor="middle" font-family="sans-serif" font-size="11" font-weight="700" fill="#4c6072">IMPLEMENTED</text>
-<text x="40" y="1066" font-family="sans-serif" font-size="13" fill="#506177">Working = this sample only. Mock = synthetic substitute. Design / proposed = not implemented here.</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="835" viewBox="0 0 1440 835" role="img" aria-labelledby="title desc">
+<title id="title">Model adaptation and reproducible experiments</title>
+<desc id="desc">Implemented training / serving and independent public code. The CPU experiment and optional recipe are separate from the observed 35B training run.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="#53808d"/></marker></defs>
+<rect width="1440" height="835" rx="18" fill="#f3f6fa"/>
+<g font-family="Arial, sans-serif">
+<text x="40" y="52" font-size="32" font-weight="700" fill="#142b43">Model adaptation and reproducible experiments</text>
+<text x="40" y="87" font-size="19" fill="#536477">Implemented training / serving and independent public code</text>
+<text x="40" y="131" font-size="17" font-weight="700" fill="#18796e">ACTUAL QLORA ENGINEERING</text>
+<g data-node="n0_0"><rect x="40.0" y="153" width="316.0" height="134" rx="10" fill="#fff" stroke="#c8d5df"/>
+<rect x="40.0" y="153" width="5" height="134" rx="2" fill="#18796e"/>
+<text x="59.0" y="185" font-size="21" font-weight="700" fill="#17314b">Review dataset</text>
+<text x="59.0" y="218" font-size="18" fill="#4a6075">Labels / sources / split</text>
+<text x="59.0" y="242" font-size="18" fill="#4a6075">Class-aware build</text>
+</g>
+<path d="M358.0 220 H383.0" stroke="#53808d" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<g data-node="n0_1"><rect x="388.0" y="153" width="316.0" height="134" rx="10" fill="#fff" stroke="#c8d5df"/>
+<rect x="388.0" y="153" width="5" height="134" rx="2" fill="#18796e"/>
+<text x="407.0" y="185" font-size="21" font-weight="700" fill="#17314b">Qwen 35B QLoRA</text>
+<text x="407.0" y="218" font-size="18" fill="#4a6075">NF4 + double quantization</text>
+<text x="407.0" y="242" font-size="18" fill="#4a6075">Rank 16 / frozen vision</text>
+</g>
+<path d="M706.0 220 H731.0" stroke="#53808d" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<g data-node="n0_2"><rect x="736.0" y="153" width="316.0" height="134" rx="10" fill="#fff" stroke="#c8d5df"/>
+<rect x="736.0" y="153" width="5" height="134" rx="2" fill="#18796e"/>
+<text x="755.0" y="185" font-size="21" font-weight="700" fill="#17314b">Track checkpoint</text>
+<text x="755.0" y="218" font-size="18" fill="#4a6075">Args / curves / state</text>
+<text x="755.0" y="242" font-size="18" fill="#4a6075">Completed adapter files</text>
+</g>
+<path d="M1054.0 220 H1079.0" stroke="#53808d" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<g data-node="n0_3"><rect x="1084.0" y="153" width="316.0" height="134" rx="10" fill="#fff" stroke="#c8d5df"/>
+<rect x="1084.0" y="153" width="5" height="134" rx="2" fill="#18796e"/>
+<text x="1103.0" y="185" font-size="21" font-weight="700" fill="#17314b">vLLM serving</text>
+<text x="1103.0" y="218" font-size="18" fill="#4a6075">Direct adapter loading</text>
+<text x="1103.0" y="242" font-size="18" fill="#4a6075">Base / adapter model list</text>
+</g>
+<text x="40" y="346" font-size="17" font-weight="700" fill="#375c98">PUBLIC CPU EXPERIMENT</text>
+<g data-node="n1_0"><rect x="40.0" y="368" width="316.0" height="134" rx="10" fill="#fff" stroke="#c8d5df"/>
+<rect x="40.0" y="368" width="5" height="134" rx="2" fill="#375c98"/>
+<text x="59.0" y="400" font-size="21" font-weight="700" fill="#17314b">Synthetic dataset</text>
+<text x="59.0" y="433" font-size="18" fill="#4a6075">Seeded train / holdout</text>
+<text x="59.0" y="457" font-size="18" fill="#4a6075">Dataset digest</text>
+</g>
+<path d="M358.0 435 H383.0" stroke="#53808d" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<g data-node="n1_1"><rect x="388.0" y="368" width="316.0" height="134" rx="10" fill="#fff" stroke="#c8d5df"/>
+<rect x="388.0" y="368" width="5" height="134" rx="2" fill="#375c98"/>
+<text x="407.0" y="400" font-size="21" font-weight="700" fill="#17314b">Frozen linear base</text>
+<text x="407.0" y="433" font-size="18" fill="#4a6075">Rank-one adapter</text>
+<text x="407.0" y="457" font-size="18" fill="#4a6075">Only adapter is updated</text>
+</g>
+<path d="M706.0 435 H731.0" stroke="#53808d" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<g data-node="n1_2"><rect x="736.0" y="368" width="316.0" height="134" rx="10" fill="#fff" stroke="#c8d5df"/>
+<rect x="736.0" y="368" width="5" height="134" rx="2" fill="#375c98"/>
+<text x="755.0" y="400" font-size="21" font-weight="700" fill="#17314b">Evaluate + save</text>
+<text x="755.0" y="433" font-size="18" fill="#4a6075">Training / holdout loss</text>
+<text x="755.0" y="457" font-size="18" fill="#4a6075">Checkpoint / manifest</text>
+</g>
+<path d="M1054.0 435 H1079.0" stroke="#53808d" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<g data-node="n1_3"><rect x="1084.0" y="368" width="316.0" height="134" rx="10" fill="#fff" stroke="#c8d5df"/>
+<rect x="1084.0" y="368" width="5" height="134" rx="2" fill="#375c98"/>
+<text x="1103.0" y="400" font-size="21" font-weight="700" fill="#17314b">Reload + verify</text>
+<text x="1103.0" y="433" font-size="18" fill="#4a6075">Base hash preserved</text>
+<text x="1103.0" y="457" font-size="18" fill="#4a6075">Deterministic inference</text>
+</g>
+<text x="40" y="561" font-size="17" font-weight="700" fill="#7a5899">PUBLIC OPTIONAL RECIPE</text>
+<g data-node="n2_0"><rect x="40.0" y="583" width="316.0" height="134" rx="10" fill="#fff" stroke="#c8d5df"/>
+<rect x="40.0" y="583" width="5" height="134" rx="2" fill="#7a5899"/>
+<text x="59.0" y="615" font-size="21" font-weight="700" fill="#17314b">Recipe configuration</text>
+<text x="59.0" y="648" font-size="18" fill="#4a6075">LoRA or NF4 QLoRA</text>
+<text x="59.0" y="672" font-size="18" fill="#4a6075">Small model configuration</text>
+</g>
+<path d="M358.0 650 H383.0" stroke="#53808d" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<g data-node="n2_1"><rect x="388.0" y="583" width="316.0" height="134" rx="10" fill="#fff" stroke="#c8d5df"/>
+<rect x="388.0" y="583" width="5" height="134" rx="2" fill="#7a5899"/>
+<text x="407.0" y="615" font-size="21" font-weight="700" fill="#17314b">Execution gates</text>
+<text x="407.0" y="648" font-size="18" fill="#4a6075">Dry-run by default</text>
+<text x="407.0" y="672" font-size="18" fill="#4a6075">Revision / local cache</text>
+</g>
+<path d="M706.0 650 H731.0" stroke="#53808d" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<g data-node="n2_2"><rect x="736.0" y="583" width="316.0" height="134" rx="10" fill="#fff" stroke="#c8d5df"/>
+<rect x="736.0" y="583" width="5" height="134" rx="2" fill="#7a5899"/>
+<text x="755.0" y="615" font-size="21" font-weight="700" fill="#17314b">PEFT training entry</text>
+<text x="755.0" y="648" font-size="18" fill="#4a6075">Explicit opt-in only</text>
+<text x="755.0" y="672" font-size="18" fill="#4a6075">Runtime dependencies</text>
+</g>
+<path d="M1054.0 650 H1079.0" stroke="#53808d" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<g data-node="n2_3"><rect x="1084.0" y="583" width="316.0" height="134" rx="10" fill="#fff" stroke="#c8d5df"/>
+<rect x="1084.0" y="583" width="5" height="134" rx="2" fill="#7a5899"/>
+<text x="1103.0" y="615" font-size="21" font-weight="700" fill="#17314b">Run artifacts</text>
+<text x="1103.0" y="648" font-size="18" fill="#4a6075">Recipe / checkpoint</text>
+<text x="1103.0" y="672" font-size="18" fill="#4a6075">Evaluation output</text>
+</g>
+<text x="40" y="789" font-size="18" fill="#536477">The CPU experiment and optional recipe are separate from the observed 35B training run.</text>
+</g>
 </svg>

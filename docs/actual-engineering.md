@@ -80,3 +80,17 @@ LoRA enabled, maximum rank 16. checkpoint-531 adapter가 모델 목록에 base�
 
 현재 UI를 1920×1080 브라우저로 읽기 전용 캡처하고 필요한 영역만 크롭했습니다.
 개인 계정으로 로그인하거나 운영 인증을 변경하지 않고 격리된 검증 identity로 읽기 전용 API를 호출했습니다.
+
+## Administrator control
+
+관리자 UI의 학습 시작·checkpoint 적용 요청은 인증된 API가 제어 파일로 기록합니다.
+별도 호스트 watcher가 요청을 받아 학습 또는 merge/export·모델 적용을 수행하고 결과 상태를 남깁니다.
+API 컨테이너와 브라우저가 직접 Docker 명령을 실행하지 않도록 실행 권한을 분리했습니다.
+
+![조회한 checkpoint 적용 대상](screenshots/adapter-checkpoints.png)
+
+2026-10-03 현재 UI의 읽기 전용 캡처입니다. checkpoint-400 / 500 / 531은 실제 저장된 목록입니다.
+화면은 적용 가능한 산출물 선택 기능을 보여주며 버튼을 실행해 모델을 바꾼 기록은 아닙니다.
+현재 직접 adapter loading과 별도 merge/apply 구현은 [도식](architecture/model-serving.svg)의 각 lane으로 구분합니다.
+서비스·배치의 [서명 실행기](https://github.com/YeongjoonKim/reliable-domain-agent-harness/blob/main/docs/execution-control.md)와
+학습 watcher의 제어 파일은 서로 다른 프로토콜입니다.

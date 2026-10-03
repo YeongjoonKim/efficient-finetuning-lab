@@ -1,10 +1,21 @@
-flowchart LR
-  A[Public images / uploads] --> B[Review / deduplicate / approve]
-  B --> C[Class-aware dataset build]
-  C --> D[Qwen 35B: NF4 QLoRA]
-  D --> E[Checkpoints 400 / 500 / 531]
-  E --> F[Monitoring / checkpoint selection]
-  F --> G[Direct adapter loading: observed]
-  G --> H[vLLM: TP4 / base and adapter]
-  H --> I[VLM application path]
-  F -. Implemented alternative .-> J[Merge / apply workflow]
+flowchart TB
+  subgraph lane0["CONTROL AND TRAINING"]
+    direction LR
+    n0_0["Admin training UI<br/>Run history / checkpoints<br/>Authenticated actions"]
+    n0_1["API request flags<br/>Training / apply request<br/>No browser Docker access"]
+    n0_2["Host watcher<br/>Train / merge-export action<br/>Logs and result status"]
+    n0_3["Training artifacts<br/>Args / state / adapter<br/>Loss / token accuracy"]
+    n0_0 --> n0_1
+    n0_1 --> n0_2
+    n0_2 --> n0_3
+  end
+  subgraph lane1["OBSERVED SERVING PATH"]
+    direction LR
+    n1_0["Completed adapter<br/>Checkpoint-531<br/>531 steps / epoch 3"]
+    n1_1["Direct adapter loading<br/>Configured base + adapter<br/>Separate from merge/apply"]
+    n1_2["vLLM model service<br/>Tensor parallel 4<br/>LoRA rank 16"]
+    n1_3["Model observation<br/>Base / adapter relationship<br/>Admin status / model list"]
+    n1_0 --> n1_1
+    n1_1 --> n1_2
+    n1_2 --> n1_3
+  end

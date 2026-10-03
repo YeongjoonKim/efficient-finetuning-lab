@@ -1,17 +1,31 @@
-flowchart TD
-  n0_0["Synthetic dataset · IMPLEMENTED"]
-  n1_0["Seeded split / digest · IMPLEMENTED"]
-  n2_0["Frozen linear base · IMPLEMENTED"]
-  n3_0["Rank-one adapter · IMPLEMENTED"]
-  n3_1["LLM LoRA / QLoRA · PROPOSED"]
-  n4_0["Training / holdout loss · PARTIAL"]
-  n5_0["Checkpoint / manifest · IMPLEMENTED"]
-  n6_0["Inference / limits · IMPLEMENTED"]
-  n0_0 --> n1_0
-  n1_0 --> n2_0
-  n2_0 --> n3_0
-  n2_0 --> n3_1
-  n3_0 --> n4_0
-  n3_1 --> n4_0
-  n4_0 --> n5_0
-  n5_0 --> n6_0
+flowchart TB
+  subgraph lane0["ACTUAL QLORA ENGINEERING"]
+    direction LR
+    n0_0["Review dataset<br/>Labels / sources / split<br/>Class-aware build"]
+    n0_1["Qwen 35B QLoRA<br/>NF4 + double quantization<br/>Rank 16 / frozen vision"]
+    n0_2["Track checkpoint<br/>Args / curves / state<br/>Completed adapter files"]
+    n0_3["vLLM serving<br/>Direct adapter loading<br/>Base / adapter model list"]
+    n0_0 --> n0_1
+    n0_1 --> n0_2
+    n0_2 --> n0_3
+  end
+  subgraph lane1["PUBLIC CPU EXPERIMENT"]
+    direction LR
+    n1_0["Synthetic dataset<br/>Seeded train / holdout<br/>Dataset digest"]
+    n1_1["Frozen linear base<br/>Rank-one adapter<br/>Only adapter is updated"]
+    n1_2["Evaluate + save<br/>Training / holdout loss<br/>Checkpoint / manifest"]
+    n1_3["Reload + verify<br/>Base hash preserved<br/>Deterministic inference"]
+    n1_0 --> n1_1
+    n1_1 --> n1_2
+    n1_2 --> n1_3
+  end
+  subgraph lane2["PUBLIC OPTIONAL RECIPE"]
+    direction LR
+    n2_0["Recipe configuration<br/>LoRA or NF4 QLoRA<br/>Small model configuration"]
+    n2_1["Execution gates<br/>Dry-run by default<br/>Revision / local cache"]
+    n2_2["PEFT training entry<br/>Explicit opt-in only<br/>Runtime dependencies"]
+    n2_3["Run artifacts<br/>Recipe / checkpoint<br/>Evaluation output"]
+    n2_0 --> n2_1
+    n2_1 --> n2_2
+    n2_2 --> n2_3
+  end

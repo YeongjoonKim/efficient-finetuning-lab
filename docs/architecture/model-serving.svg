@@ -1,43 +1,67 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
-  <title id="title">Actual QLoRA training and adapter serving</title>
-  <desc id="desc">Reviewed data feeds a Qwen 35B NF4 training run, checkpoints, direct adapter loading, vLLM and application inference. Monitoring reads training artifacts.</desc>
-  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="#4ba59b"/></marker></defs>
-  <rect width="1200" height="640" rx="20" fill="#0c1726"/>
-  <g font-family="Arial, sans-serif">
-    <text x="38" y="52" fill="#ffffff" font-size="26" font-weight="700">Qwen 35B · Actual Training → Serving</text>
-    <text x="38" y="83" fill="#aabdd4" font-size="15">Evidence reviewed 2026-10-02 · Completed artifacts + current runtime inspection</text>
-    <g fill="#142a3b" stroke="#2f526a">
-      <rect x="38" y="125" width="250" height="135" rx="12"/>
-      <rect x="330" y="125" width="250" height="135" rx="12"/>
-      <rect x="622" y="125" width="250" height="135" rx="12"/>
-      <rect x="915" y="125" width="247" height="135" rx="12"/>
-      <rect x="38" y="345" width="250" height="135" rx="12"/>
-      <rect x="330" y="345" width="250" height="135" rx="12"/>
-      <rect x="622" y="345" width="250" height="135" rx="12"/>
-      <rect x="915" y="345" width="247" height="135" rx="12"/>
-    </g>
-    <g fill="#ffffff" font-size="20" font-weight="700">
-      <text x="56" y="159">01 · Acquire &amp; Review</text><text x="348" y="159">02 · Build Dataset</text>
-      <text x="640" y="159">03 · QLoRA Training</text><text x="933" y="159">04 · Checkpoints</text>
-      <text x="56" y="379">08 · Application</text><text x="348" y="379">07 · vLLM Runtime</text>
-      <text x="640" y="379">06 · Adapter Loading</text><text x="933" y="379">05 · Track &amp; Select</text>
-    </g>
-    <g fill="#b8cedf" font-size="15">
-      <text x="56" y="193">Public images / uploads</text><text x="56" y="220">Dedup · labels · approval</text>
-      <text x="348" y="193">Class-aware train / val</text><text x="348" y="220">Committed inputs → rebuild</text>
-      <text x="640" y="193">4-bit NF4 · double quant</text><text x="640" y="220">rank 16 · frozen vision</text>
-      <text x="933" y="193">400 / 500 / 531</text><text x="933" y="220">531 / 531 steps · 3 epochs</text>
-      <text x="933" y="413">Loss · token accuracy</text><text x="933" y="440">Args · state · admin UI</text>
-      <text x="640" y="413">checkpoint-531</text><text x="640" y="440">Direct LoRA: observed path</text>
-      <text x="348" y="413">Tensor parallel 4</text><text x="348" y="440">Base + adapter listed</text>
-      <text x="56" y="413">VLM tool integration</text><text x="56" y="440">Separate from YOLO route</text>
-    </g>
-    <g fill="none" stroke="#4ba59b" stroke-width="3" marker-end="url(#arrow)">
-      <path d="M288 192H322"/><path d="M580 192H614"/><path d="M872 192H907"/>
-      <path d="M1038 260V337"/><path d="M915 413H880"/><path d="M622 413H588"/><path d="M330 413H296"/>
-    </g>
-    <rect x="38" y="528" width="1124" height="74" rx="12" fill="#142235"/>
-    <text x="58" y="557" fill="#d7e6f3" font-size="16">Also implemented: merge / apply workflow. Current serving uses direct adapter loading.</text>
-    <text x="58" y="582" fill="#9fb3c8" font-size="14">Public CPU example and optional small-model PEFT recipe are separate reproducibility tracks.</text>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="620" viewBox="0 0 1440 620" role="img" aria-labelledby="title desc">
+<title id="title">Training control and adapter serving</title>
+<desc id="desc">Implemented management workflow · observed direct-loading path. An implemented merge/apply control is shown separately from the observed direct adapter registration.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="#53808d"/></marker></defs>
+<rect width="1440" height="620" rx="18" fill="#f3f6fa"/>
+<g font-family="Arial, sans-serif">
+<text x="40" y="52" font-size="32" font-weight="700" fill="#142b43">Training control and adapter serving</text>
+<text x="40" y="87" font-size="19" fill="#536477">Implemented management workflow · observed direct-loading path</text>
+<text x="40" y="131" font-size="17" font-weight="700" fill="#18796e">CONTROL AND TRAINING</text>
+<g data-node="n0_0"><rect x="40.0" y="153" width="316.0" height="134" rx="10" fill="#fff" stroke="#c8d5df"/>
+<rect x="40.0" y="153" width="5" height="134" rx="2" fill="#18796e"/>
+<text x="59.0" y="185" font-size="21" font-weight="700" fill="#17314b">Admin training UI</text>
+<text x="59.0" y="218" font-size="18" fill="#4a6075">Run history / checkpoints</text>
+<text x="59.0" y="242" font-size="18" fill="#4a6075">Authenticated actions</text>
+</g>
+<path d="M358.0 220 H383.0" stroke="#53808d" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<g data-node="n0_1"><rect x="388.0" y="153" width="316.0" height="134" rx="10" fill="#fff" stroke="#c8d5df"/>
+<rect x="388.0" y="153" width="5" height="134" rx="2" fill="#18796e"/>
+<text x="407.0" y="185" font-size="21" font-weight="700" fill="#17314b">API request flags</text>
+<text x="407.0" y="218" font-size="18" fill="#4a6075">Training / apply request</text>
+<text x="407.0" y="242" font-size="18" fill="#4a6075">No browser Docker access</text>
+</g>
+<path d="M706.0 220 H731.0" stroke="#53808d" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<g data-node="n0_2"><rect x="736.0" y="153" width="316.0" height="134" rx="10" fill="#fff" stroke="#c8d5df"/>
+<rect x="736.0" y="153" width="5" height="134" rx="2" fill="#18796e"/>
+<text x="755.0" y="185" font-size="21" font-weight="700" fill="#17314b">Host watcher</text>
+<text x="755.0" y="218" font-size="18" fill="#4a6075">Train / merge-export action</text>
+<text x="755.0" y="242" font-size="18" fill="#4a6075">Logs and result status</text>
+</g>
+<path d="M1054.0 220 H1079.0" stroke="#53808d" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<g data-node="n0_3"><rect x="1084.0" y="153" width="316.0" height="134" rx="10" fill="#fff" stroke="#c8d5df"/>
+<rect x="1084.0" y="153" width="5" height="134" rx="2" fill="#18796e"/>
+<text x="1103.0" y="185" font-size="21" font-weight="700" fill="#17314b">Training artifacts</text>
+<text x="1103.0" y="218" font-size="18" fill="#4a6075">Args / state / adapter</text>
+<text x="1103.0" y="242" font-size="18" fill="#4a6075">Loss / token accuracy</text>
+</g>
+<text x="40" y="346" font-size="17" font-weight="700" fill="#375c98">OBSERVED SERVING PATH</text>
+<g data-node="n1_0"><rect x="40.0" y="368" width="316.0" height="134" rx="10" fill="#fff" stroke="#c8d5df"/>
+<rect x="40.0" y="368" width="5" height="134" rx="2" fill="#375c98"/>
+<text x="59.0" y="400" font-size="21" font-weight="700" fill="#17314b">Completed adapter</text>
+<text x="59.0" y="433" font-size="18" fill="#4a6075">Checkpoint-531</text>
+<text x="59.0" y="457" font-size="18" fill="#4a6075">531 steps / epoch 3</text>
+</g>
+<path d="M358.0 435 H383.0" stroke="#53808d" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<g data-node="n1_1"><rect x="388.0" y="368" width="316.0" height="134" rx="10" fill="#fff" stroke="#c8d5df"/>
+<rect x="388.0" y="368" width="5" height="134" rx="2" fill="#375c98"/>
+<text x="407.0" y="400" font-size="21" font-weight="700" fill="#17314b">Direct adapter loading</text>
+<text x="407.0" y="433" font-size="18" fill="#4a6075">Configured base + adapter</text>
+<text x="407.0" y="457" font-size="18" fill="#4a6075">Separate from merge/apply</text>
+</g>
+<path d="M706.0 435 H731.0" stroke="#53808d" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<g data-node="n1_2"><rect x="736.0" y="368" width="316.0" height="134" rx="10" fill="#fff" stroke="#c8d5df"/>
+<rect x="736.0" y="368" width="5" height="134" rx="2" fill="#375c98"/>
+<text x="755.0" y="400" font-size="21" font-weight="700" fill="#17314b">vLLM model service</text>
+<text x="755.0" y="433" font-size="18" fill="#4a6075">Tensor parallel 4</text>
+<text x="755.0" y="457" font-size="18" fill="#4a6075">LoRA rank 16</text>
+</g>
+<path d="M1054.0 435 H1079.0" stroke="#53808d" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+<g data-node="n1_3"><rect x="1084.0" y="368" width="316.0" height="134" rx="10" fill="#fff" stroke="#c8d5df"/>
+<rect x="1084.0" y="368" width="5" height="134" rx="2" fill="#375c98"/>
+<text x="1103.0" y="400" font-size="21" font-weight="700" fill="#17314b">Model observation</text>
+<text x="1103.0" y="433" font-size="18" fill="#4a6075">Base / adapter relationship</text>
+<text x="1103.0" y="457" font-size="18" fill="#4a6075">Admin status / model list</text>
+</g>
+<text x="40" y="574" font-size="18" fill="#536477">An implemented merge/apply control is shown separately from the observed direct adapter registration.</text>
+</g>
 </svg>

@@ -9,3 +9,10 @@
 
 각 이미지의 목적 / 이 화면이 보여주는 것 / 아키텍처 연결은 README에서 설명합니다.
 [지표 정의·완료 판정](actual-engineering.md) · [검토한 이미지 hash](screenshots/manifest.json).
+
+## Execution management · 2026-10-03
+
+- [실제 저장된 adapter 적용 대상](screenshots/adapter-checkpoints.png)
+
+현재 UI를 격리된 조회 전용 브라우저에서 촬영했습니다. 모델·서비스·데이터 변경 동작은 실행하지 않았습니다.
+상태·수치·실패 표시는 유지하고 공개에 불필요한 식별자를 일반화했습니다. 시간대는 Asia/Seoul입니다.

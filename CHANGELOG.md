@@ -1,5 +1,11 @@
 # Changelog — Model Adaptation & Serving
 
+## 2026-10-03 — Execution evidence and current architecture
+
+- 관리자 실행 제어와 현재 저장된 실행·모델·배치 화면을 보강했습니다.
+- 아키텍처 SVG·Mermaid를 현재 구현에 맞추고 동일 명세 기반 렌더러를 추가했습니다.
+- 운영 경험·별도 Scientific 실행·독립 공개 예제의 책임과 캡처 범위를 연결했습니다.
+
 ## 2026-10-02 — Technical portfolio polish
 
 - 기존 핵심 학습·서빙 표를 Training & Serving Facts로 통일하고 문장을 자연화했다.
