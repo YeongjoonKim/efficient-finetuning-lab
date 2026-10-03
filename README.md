@@ -4,7 +4,7 @@
 
 [![CI](https://github.com/YeongjoonKim/efficient-finetuning-lab/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/YeongjoonKim/efficient-finetuning-lab/actions/workflows/ci.yml)
 
-## 실제 구현 - 파인튜닝_이미지 어댑터(QWen+LoRA)
+## 실제 구현 경험 — Qwen3.6 QLoRA 학습 및 vLLM 서빙
 
 이 프로젝트는 **Model adaptation → Experiment tracking → Serving**을 다룹니다.
 35B QLoRA 학습·서빙 파이프라인과 경량 공개 재현 예제를 구분해 제공합니다.
@@ -20,10 +20,10 @@
 | Training | ms-swift · bitsandbytes **4-bit NF4 + double quantization** · bfloat16 compute |
 | Adapter | LoRA rank 16 / alpha 32 · all-linear · vision encoder frozen |
 | Completed Run | 3 epochs · **531 / 531 steps** · checkpoint-531 |
-| Evaluation | loss **0.19017857**, token accuracy **0.95468998** |
+| Evaluation | Eval loss **0.19017857** · Eval token accuracy **0.95468998** |
 | Serving | vLLM · tensor parallel 4 · checkpoint-531 직접 adapter loading |
 
-Token accuracy는 정답 시퀀스의 토큰 단위 지표이며 진단 정확도와 구분합니다.
+Eval token accuracy는 정답 시퀀스의 토큰 단위 지표이며 진단 정확도와 구분합니다.
 [상세 근거와 지표 정의](docs/actual-engineering.md).
 
 ## 학습·서빙 아키텍처
@@ -39,22 +39,16 @@ merge 후 적용 경로도 구현되어 있으며 현재 사용 경로와 구분
 
 ## 학습 모니터링
 
-**목적** — 실행별 설정과 진행 상태를 같은 화면에서 확인합니다.
-
 ![학습 실행 이력과 요약](docs/screenshots/training-summary.png)
 
-**이 화면이 보여주는 것** — 실행 이력, train/eval 지표, hyperparameter 조회가 학습 산출물에 연결됩니다.
+실행 이력에서 train/eval 지표, hyperparameter와 학습 산출물을 함께 조회합니다.
 화면의 마지막 training log는 530 step을 표시하지만, trainer state에서는 531 step 완료를 확인할 수 있습니다.
-**아키텍처 연결** — Training → Experiment Tracking.
 
 ### 학습 곡선
 
-**목적** — loss·token accuracy·gradient norm·learning rate로 학습 진행을 관찰합니다.
-
 ![Loss와 token accuracy 등 학습 곡선](docs/screenshots/training-curves.png)
 
-**이 화면이 보여주는 것** — 저장된 train/eval 로그의 네 가지 그래프.
-**아키텍처 연결** — Training → Monitoring → Checkpoint Selection.
+저장된 로그의 loss·token accuracy·gradient norm·learning rate로 학습 진행을 관찰합니다.
 
 ## 데이터 수집과 큐레이션
 
@@ -64,21 +58,15 @@ merge 후 적용 경로도 구현되어 있으며 현재 사용 경로와 구분
 캡처 시점 활성 데이터셋은 **train 2,822 / validation 135 / 855 labels**입니다.
 외부 수집분 **4,520장은 다음 빌드 대기**이며 완료된 학습의 사용량에 더하지 않습니다.
 
-**목적** — 정답 라벨별 수량과 이미지를 함께 보며 불균형·라벨 오류를 검토합니다.
-
 ![라벨별 수량과 학습 이미지 샘플](docs/screenshots/training-label-samples.png)
 
-**이 화면이 보여주는 것** — 클래스 검색, 소스 필터, 선택 라벨의 이미지·split drill-down.
-**아키텍처 연결** — Acquisition → Curation → Dataset.
+클래스·소스별로 이미지를 조회하고 split과 라벨별 수량을 비교해 불균형·라벨 오류를 검토합니다.
 
 ## 체크포인트 관리
 
-**목적** — 저장된 adapter를 실행 이력과 연결해 선택합니다.
-
 ![저장된 adapter와 체크포인트 관리](docs/screenshots/training-checkpoints.png)
 
-**이 화면이 보여주는 것** — checkpoint-400 / 500 / 531과 모델 적용 인터페이스.
-**아키텍처 연결** — Training Artifact → Deployment Decision → Serving.
+checkpoint-400 / 500 / 531을 실행 이력과 연결하고 모델 적용 대상으로 선택합니다.
 
 ## 시스템 설계의 강점
 

@@ -1,7 +1,7 @@
 # Actual Training & Serving Evidence
 
-검토일: 2026-10-02. 원본 설정·학습 로그·파일 존재·현재 runtime·관리자 UI를 교차 확인했습니다.
-이 문서는 공개 가능한 관측 기록이며 비공개 학습 파일 자체는 배포하지 않습니다.
+2026-10-02의 학습 설정·로그·checkpoint·serving runtime을 기준으로 구현 범위를 정리합니다.
+비공개 학습 파일 대신 아래 설정과 산출물의 대응 관계를 제공합니다.
 
 | Claim | 확인한 근거 | 판정 |
 |---|---|---|
@@ -47,7 +47,8 @@ learning rate 0.0001, max length 2048, epochs 3. Vision encoder를 고정하고 
 ## Completion & Evaluation
 
 최종 로그: train runtime 20,362.4431초, aggregate train loss 0.41021487,
-eval loss 0.19017857, eval token accuracy 0.95468998.
+Eval loss 0.19017857, Eval token accuracy 0.95468998.
+Eval token accuracy는 정답 시퀀스의 토큰 단위 지표이며 이미지 진단 정확도가 아닙니다.
 
 관리자 progress는 마지막 train log인 530 / 531을 표시하지만 최종 eval과 trainer state는 531입니다.
 학습 완료 판정은 UI의 반올림 100%가 아니라 완료 artifact를 기준으로 했습니다.
